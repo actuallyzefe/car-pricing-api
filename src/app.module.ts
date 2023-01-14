@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot({
       type: 'sqlite', // kullandıgımız database
       database: 'db.sqlite',
-      entities: [User],
+      entities: [User], // repo
       synchronize: true,
     }),
     ReportsModule,
