@@ -14,7 +14,8 @@ import { UsersModule } from './users/users.module';
       type: 'sqlite', // kullandıgımız database
       database: 'db.sqlite',
       entities: [User, Report], // repo
-      synchronize: true,
+      synchronize: true, // Otomatik olarak migration yazmamızı sağlar (otomatik oalrak table ı gunceller -- column ekler - siler vesaire)
+      // IMPORTANT developement modda bu gayet yardımcı fakat production modda bunu kullanmamalıyız! Migration dosyaları yazmalıyız
     }),
     ReportsModule,
     UsersModule,
