@@ -8,13 +8,21 @@ import {
   Query,
   Delete,
   NotFoundException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { parse } from 'path';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
+import {
+  Serialize,
+  SerializeInterceptor,
+} from 'src/interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user.dto';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -23,6 +31,8 @@ export class UsersController {
     this.userService.create(body.email, body.password);
   }
 
+  // @UseInterceptors(new SerializeInterceptor(UserDto))
+  // @Serialize(UserDto) // her bırı user dondurdugu ıcın dırekt bu class ın ustune bunu koyabılrıız
   @Get('/:id')
   async findUser(@Param('id') id: string) {
     // id: numberdı neden id: string oldu => query kısmı stringdir bundan dolayı. Database de yıne number olarak kalır.
