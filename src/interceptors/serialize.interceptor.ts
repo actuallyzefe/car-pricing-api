@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
 
+// Responsta gozukecek gozukmeyecek seylerı ayarladıgımız yer dıyebılırım
+
 // import { UserDto } from 'src/users/dtos/user.dto';
 
 // type any den kurtulamk ıcın yaptık
