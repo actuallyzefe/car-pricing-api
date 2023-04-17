@@ -8,25 +8,31 @@ import {
   Query,
   Delete,
   Patch,
-  UseInterceptors,
-  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-users.dto';
-import {
-  Serialize,
-  SerializeInterceptor,
-} from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { privateDecrypt } from 'crypto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
+
   @Post('/signup')
   createUser(@Body() body: CreateUserDto) {
-    this.userService.create(body.email, body.password);
+    return this.authService.signup(body.email, body.password);
+  }
+
+  @Post('/signin')
+  signin(@Body() body: CreateUserDto) {
+    return this.authService.signin(body.email, body.password);
   }
 
   @Get('/:id')
@@ -38,7 +44,6 @@ export class UsersController {
 
   @Get()
   findAllUsers(@Query('email') email: string) {
-    console.log('HANDLER IS RUNNING');
     return this.userService.find(email);
   }
 
