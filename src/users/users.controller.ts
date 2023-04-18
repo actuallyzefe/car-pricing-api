@@ -8,7 +8,7 @@ import {
   Query,
   Delete,
   Patch,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -20,6 +20,7 @@ import { Session } from '@nestjs/common'; // cookie-Session içerisine accessimi
 import { CurrentUser } from './decorators/current-user.decorator';
 
 import { User } from './user.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -38,6 +39,7 @@ export class UsersController {
 
   //   return user;
   // }
+  @UseGuards(AuthGuard)
   @Get('/whoami')
   whoAmI(@CurrentUser() user: User) {
     return user;
