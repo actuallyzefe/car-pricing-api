@@ -9,12 +9,20 @@ describe('Auth Service', () => {
 
   beforeEach(async () => {
     // Create fake copy of UsersService
+    const users: User[] = [];
     fakeUsersService = {
-      find: () => {
-        return Promise.resolve([]);
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
       },
       create: (email: string, password: string) => {
-        return Promise.resolve({ id: 1, email, password });
+        const user = {
+          id: Math.floor(Math.random() * 999999),
+          email,
+          password,
+        } as User;
+        users.push(user);
+        return Promise.resolve(user);
       },
     };
 
@@ -56,5 +64,21 @@ describe('Auth Service', () => {
     await expect(
       service.signin('asdflkj@asdlfkj.com', 'passdflkj'),
     ).rejects.toThrow(NotFoundException);
+  });
+
+  it('throws if an invalid password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        { email: 'asdf@asdf.com', password: 'laskdjf' } as User,
+      ]);
+    await expect(
+      service.signin('asdasd@asdasf.com', 'passowrd'),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('returns a user if correct email is provided', async () => {
+    await service.signup('asdasd@asddas.com', 'mypassword');
+    const user = await service.signin('asdasd@asddas.com', 'mypassword');
+    console.log(user);
   });
 });
